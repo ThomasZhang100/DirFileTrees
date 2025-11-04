@@ -18,8 +18,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    Path_T oPNPath;
    Path_T oPPPath;
    size_t i; 
-   Node_T prevChild;
-   Node_T currChild;
+   Node_T prevChild = NULL;
+   Node_T currChild = NULL;
 
    /* Sample check: a NULL pointer is not a valid node */
    if(oNNode == NULL) {
@@ -43,16 +43,15 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    }
 
    /*Check that a node's children are stored in lexicogrpahical order*/
-   for(i = 0; i < Node_getNumChildren(oNNode); i++)
+   for(i = 1; i < Node_getNumChildren(oNNode); i++)
    {
-      Node_getChild(oNParent, i, prevChild);
-      Node_getChild(oNParent, i, currChild);
-      if(Node_getPath(prevChild) > Node_getPath(currChild))
+      Node_getChild(oNNode, i-1, &prevChild);
+      Node_getChild(oNNode, i, &currChild);
+      if(Path_comparePath(Node_getPath(prevChild), Node_getPath(currChild)) > 0)
       {
          fprintf(stderr, "Children not stored lexicographically\n");
          return FALSE;
       }
-
    }
 
    return TRUE;
