@@ -32,7 +32,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       oPPPath = Node_getPath(oNParent);
 
       if(Path_getSharedPrefixDepth(oPNPath, oPPPath) !=
-         Path_getDepth(oPNPath) - 1) {
+         Path_getDepth(oPNPath) - 1 || Path_getSharedPrefixDepth(oPNPath, oPPPath) !=
+         Path_getDepth(oPPPath)) {
          fprintf(stderr, "P-C nodes don't have P-C paths: (%s) (%s)\n",
                  Path_getPathname(oPPPath), Path_getPathname(oPNPath));
          return FALSE;
@@ -43,16 +44,19 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 }
 
 /*
-   Performs a pre-order traversal of the tree rooted at oNNode.
+   Performs a pre-order traversal of the tree rooted at oNNode .
    Returns FALSE if a broken invariant is found and
-   returns TRUE otherwise.
+   returns TRUE otherwise, taking into account the existence of 
+   oNHigherNode (which is oNNode or an ancestor of oNNode).
 
    You may want to change this function's return type or
    parameter list to facilitate constructing your checks.
    If you do, you should update this function comment.
 */
-static boolean CheckerDT_treeCheck(Node_T oNNode) {
+static boolean CheckerDT_treeCheck(Node_T oNNode, Node_T oNHigherNode) {
    size_t ulIndex;
+   Path_T oHNPath;
+   Path_T oNPath;
 
    if(oNNode!= NULL) {
 
@@ -60,6 +64,16 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
       /* If not, pass that failure back up immediately */
       if(!CheckerDT_Node_isValid(oNNode))
          return FALSE;
+
+      oHNPath = Node_getPath(oNHigherNode);
+      oNPath = Node_getPath(oNNode);
+
+      if(Path_getSharedPrefixDepth(oHNPath, oNPath) !=
+         Path_getDepth(oHNPath)) {
+         fprintf(stderr, "Largest shared prefix depth of an Ancestor anc Child is not the depth of the ancestor: (%s) (%s)\n",
+                 Path_getPathname(oNPath), Path_getPathname(oHNPath));
+         return FALSE;
+      }
 
       /* Recur on every child of oNNode */
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
@@ -72,9 +86,19 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
             return FALSE;
          }
 
+         if(oNChild == NULL) {
+            fprintf(stderr, "getChild returned NULL for an index that getNumChildren claimed was valid.\n");
+            return FALSE;
+         }
+
+         if(Node_getParent(oNChild) != oNNode) {
+            fprintf(stderr, "The parent of the child of a node (getParent of getChild of the node) didn't return the original node.\n");
+            return FALSE;
+         }
+
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
-         if(!CheckerDT_treeCheck(oNChild))
+         if(!CheckerDT_treeCheck(oNChild, oNHigherNode))
             return FALSE;
       }
    }
@@ -94,5 +118,5 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
       }
 
    /* Now checks invariants recursively at each node from the root. */
-   return CheckerDT_treeCheck(oNRoot);
+   return CheckerDT_treeCheck(oNRoot, oNRoot);
 }
