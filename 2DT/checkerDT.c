@@ -17,6 +17,9 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    Node_T oNParent;
    Path_T oPNPath;
    Path_T oPPPath;
+   size_t i; 
+   Node_T prevChild;
+   Node_T currChild;
 
    /* Sample check: a NULL pointer is not a valid node */
    if(oNNode == NULL) {
@@ -37,6 +40,19 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
                  Path_getPathname(oPPPath), Path_getPathname(oPNPath));
          return FALSE;
       }
+   }
+
+   /*Check that a node's children are stored in lexicogrpahical order*/
+   for(i = 0; i < Node_getNumChildren(oNNode); i++)
+   {
+      Node_getChild(oNParent, i, prevChild);
+      Node_getChild(oNParent, i, currChild);
+      if(Node_getPath(prevChild) > Node_getPath(currChild))
+      {
+         fprintf(stderr, "Children not stored lexicographically\n");
+         return FALSE;
+      }
+
    }
 
    return TRUE;
