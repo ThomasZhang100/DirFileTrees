@@ -22,7 +22,7 @@ clobber: clean
 
 # Dependency Rules
 dynarray.o: dynarray.c dynarray.h
-	$(CC) $(CFLAGS) -c testsymtable.c
+	$(CC) $(CFLAGS) -c dynarray.c
 
 path.o: path.c dynarray.h path.h a4def.h
 	$(CC) $(CFLAGS) -c path.c
