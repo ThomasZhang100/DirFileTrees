@@ -18,7 +18,7 @@ clean:
 	rm -f ftmeminfo*.out
 
 clobber: clean
-	rm -f ft.o  *~
+	rm -f *~ \#*\#
 
 # Dependency Rules
 dynarray.o: dynarray.c dynarray.h
