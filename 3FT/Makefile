@@ -1,6 +1,6 @@
 #--------------------------------------------------------------------
 # Makefile for Assignment 4, Part 3
-# Author: 
+# Author: Thomas Zhang and Maia Abiani
 #--------------------------------------------------------------------
 
 # Macros
@@ -15,10 +15,10 @@ CFLAGS =
 all: ft
 
 clean:
-	rm -f ftmeminfo*.out
+	rm -f ft meminfo*.out
 
 clobber: clean
-	rm -f *~ \#*\#
+	rm -f dynarray.o path.o ft_client.o nodeFT.o ft.o *~
 
 # Dependency Rules
 dynarray.o: dynarray.c dynarray.h
