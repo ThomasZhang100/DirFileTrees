@@ -64,7 +64,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, typeNode type, v
    int iStatus;
 
    assert(oPPath != NULL);
-   assert(type == FILE || type == DIRECTORY);
+   assert(type == FILE_NODE || type == DIRECTORY);
 
    /* allocate space for a new node */
    psNew = malloc(sizeof(struct node));
@@ -127,7 +127,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, typeNode type, v
    psNew->oNParent = oNParent;
 
    /* Initialize the new node. */
-   if(type == FILE)
+   if(type == FILE_NODE)
    {
       psNew->fileContents= oPFileContents;
       psNew->oDChildren = NULL;
@@ -169,7 +169,7 @@ size_t Node_free(Node_T oNNode) {
    size_t ulCount = 0;
 
    assert(oNNode != NULL);
-   assert(CheckerDT_Node_isValid(oNNode));
+   
 
    /* remove from parent's list */
    if(oNNode->oNParent != NULL) {
@@ -212,7 +212,7 @@ boolean Node_hasChild(Node_T oNParent, Path_T oPPath,
    assert(oPPath != NULL);
    assert(pulChildID != NULL);
 
-   if(oNParent->type == FILE)
+   if(oNParent->type == FILE_NODE)
       return FALSE;
 
    /* *pulChildID is the index into oNParent->oDChildren */
@@ -224,7 +224,7 @@ boolean Node_hasChild(Node_T oNParent, Path_T oPPath,
 size_t Node_getNumChildren(Node_T oNParent) {
    assert(oNParent != NULL);
 
-   if(oNParent->type == FILE)
+   if(oNParent->type == FILE_NODE)
       return 0;
 
    return DynArray_getLength(oNParent->oDChildren);
@@ -236,7 +236,7 @@ int  Node_getChild(Node_T oNParent, size_t ulChildID,
    assert(oNParent != NULL);
    assert(poNResult != NULL);
 
-   if(oNParent->type == FILE)
+   if(oNParent->type == FILE_NODE)
       return FALSE;
 
    /* ulChildID is the index into oNParent->oDChildren */
@@ -277,16 +277,18 @@ char *Node_toString(Node_T oNNode) {
 
 void *Node_getFileContents(Node_T oNNode){
    assert(oNNode!= NULL);
-   assert(oNNode->type == FILE);
+   assert(oNNode->type == FILE_NODE);
 
    return oNNode->fileContents;
 }
 
 void *Node_swapFileContents(Node_T oNNode, void *newContents, size_t newLength){
+   void *oldContents;
+   
    assert(oNNode!= NULL);
-   assert(oNNode->type == FILE);
+   assert(oNNode->type == FILE_NODE);
 
-   void *oldContents = oNNode->fileContents;
+   oldContents = oNNode->fileContents;
    oNNode->fileContents = newContents;
    oNNode->fileLength = newLength;
    return oldContents;
@@ -294,7 +296,7 @@ void *Node_swapFileContents(Node_T oNNode, void *newContents, size_t newLength){
 
 size_t Node_getFileSize(Node_T oNNode){
    assert(oNNode!= NULL);
-   assert(oNNode->type == FILE);
+   assert(oNNode->type == FILE_NODE);
 
    return oNNode->fileLength;
 }

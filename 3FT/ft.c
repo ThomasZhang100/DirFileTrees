@@ -295,7 +295,7 @@ int FT_insertFile(const char *pcPath, void *pvContents,
     Node_T oNCurr = NULL;
     size_t ulDepth, ulIndex;
     size_t ulNewNodes = 0;
-    typeNode type = FILE;
+    typeNode type = FILE_NODE;
 
     assert(pcPath != NULL);
 
@@ -463,7 +463,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize)
     if(type == DIRECTORY){
         *pbIsFile = FALSE;
     } 
-    else if(type == FILE) {
+    else if(type == FILE_NODE) {
         *pbIsFile = TRUE;
         *pulSize = Node_getFileSize(oNFound);
     }
@@ -523,7 +523,7 @@ static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
          Node_T oNChild = NULL;
          iStatus = Node_getChild(n,c, &oNChild);
          assert(iStatus == SUCCESS);
-         if (Node_getType(oNChild) == FILE) {
+         if (Node_getType(oNChild) == FILE_NODE) {
              DynArray_set(d, i, n);
              i++;
          }

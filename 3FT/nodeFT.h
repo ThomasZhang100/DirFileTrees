@@ -14,7 +14,7 @@
 /* A Node_T is a node in a Directory Tree */
 typedef struct node *Node_T;
 /* typeNode is a flag for the type of Node */
-typedef enum {DIRECTORY, FILE} typeNode ;
+typedef enum {DIRECTORY, FILE_NODE} typeNode ;
 
 /*
   Creates a new node in the File Tree, with path oPPath and
