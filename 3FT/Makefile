@@ -1,13 +1,17 @@
 #--------------------------------------------------------------------
-# Makefile for Assignment 4, Part 2
-# dt* targets are built using checkerDT
-# rules to build dtBad*.o and nodeBad*.o from source will fail
-# Author: Christopher Moretti
+# Makefile for Assignment 4, Part 3
+# Author: 
 #--------------------------------------------------------------------
 
-GCC = gcc217
-#GCC = gcc217m
+# Macros
+#CC = gcc217
+CC = gcc217m
+CFLAGS =
+# CFLAGS = -g
+# CFLAGS = -D NDEBUG
+# CFLAGS = -D NDEBUG -O
 
+# Dependency rules for non-file targets
 all: ft
 
 clean:
@@ -18,19 +22,19 @@ clobber: clean
 
 # Dependency Rules
 dynarray.o: dynarray.c dynarray.h
-	$(GCC) -g -c $<
+	$(CC) $(CFLAGS) -c testsymtable.c
 
 path.o: path.c dynarray.h path.h a4def.h
-	$(GCC) -g -c $<
+	$(CC) $(CFLAGS) -c path.c
 
 ft_client.o: ft_client.c ft.h a4def.h
-	$(GCC) -g -c $<
+	$(CC) $(CFLAGS) -c ft_client.c
 
 nodeFT.o: nodeFT.c dynarray.h nodeFT.h path.h a4def.h
-	$(GCC) -g -c $<
+	$(CC) $(CFLAGS) -c nodeFT.c
 
-ft.o: ft.c dynarray.h nodeDT.h dt.h path.h a4def.h
-	$(GCC) -g -c $<
+ft.o: ft.c dynarray.h nodeFT.h ft.h path.h a4def.h
+	$(CC) $(CFLAGS) -c ft.c
 
 ft: ft.o nodeFT.o ft_client.o path.o dynarray.o 
-	$(GCC) -g -c $< ft.o nodeFT.o ft_client.o path.o dynarray.o -o ft
+	$(CC) $(CFLAGS) ft.o nodeFT.o ft_client.o path.o dynarray.o -o ft
