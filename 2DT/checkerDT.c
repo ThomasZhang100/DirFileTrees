@@ -19,7 +19,8 @@
    relationship satisfies that the ancestor path is a prefix 
    of the descendant path. 
 */
-static boolean CheckerDT_ancestorTreeCheck(Node_T oNNode, Node_T oNHigherNode) {
+static boolean CheckerDT_ancestorTreeCheck(Node_T oNNode, 
+   Node_T oNHigherNode) {
    size_t ulIndex;
    Path_T oHNPath;
    Path_T oNPath;
@@ -32,7 +33,8 @@ static boolean CheckerDT_ancestorTreeCheck(Node_T oNNode, Node_T oNHigherNode) {
 
       if(Path_getSharedPrefixDepth(oHNPath, oNPath) !=
          Path_getDepth(oHNPath)) {
-         fprintf(stderr, "Largest shared prefix depth of an Ancestor and Descendant is not the depth of the ancestor: (%s) (%s)\n",
+         fprintf(stderr, "Largest shared prefix depth of an Ancestor 
+            and Child is not the depth of the ancestor: (%s) (%s)\n",
                  Path_getPathname(oNPath), Path_getPathname(oHNPath));
          return FALSE;
       }
@@ -44,7 +46,8 @@ static boolean CheckerDT_ancestorTreeCheck(Node_T oNNode, Node_T oNHigherNode) {
          int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
 
          if(iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+            fprintf(stderr, "getNumChildren claims more children 
+               than getChild returns\n");
             return FALSE;
          }
 
@@ -83,8 +86,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       oPPPath = Node_getPath(oNParent);
 
       if(Path_getSharedPrefixDepth(oPNPath, oPPPath) !=
-         Path_getDepth(oPNPath) - 1 || Path_getSharedPrefixDepth(oPNPath, oPPPath) !=
-         Path_getDepth(oPPPath)) {
+         Path_getDepth(oPNPath) - 1 || Path_getSharedPrefixDepth(oPNPath
+         , oPPPath) != Path_getDepth(oPPPath)) {
          fprintf(stderr, "P-C nodes don't have P-C paths: (%s) (%s)\n",
                  Path_getPathname(oPPPath), Path_getPathname(oPNPath));
          return FALSE;
@@ -96,7 +99,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    {
       Node_getChild(oNNode, i-1, &prevChild);
       Node_getChild(oNNode, i, &currChild);
-      if(Path_comparePath(Node_getPath(prevChild), Node_getPath(currChild)) > 0)
+      if(Path_comparePath(Node_getPath(prevChild), 
+      Node_getPath(currChild)) > 0)
       {
          fprintf(stderr, "Children not stored lexicographically\n");
          return FALSE;
@@ -111,7 +115,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       for(j = 0; j < Node_getNumChildren(oNNode); j++)
       {
          Node_getChild(oNNode, j, &childCmp2);
-         if(i!=j && Path_comparePath(Node_getPath(childCmp1), Node_getPath(childCmp2)) == 0)
+         if(i!=j && Path_comparePath(Node_getPath(childCmp1), 
+         Node_getPath(childCmp2)) == 0)
          {
             fprintf(stderr, "Duplicate children for node: (%s)\n",
                  Path_getPathname(Node_getPath(oNNode)));
@@ -156,17 +161,21 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
          int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
 
          if(iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+            fprintf(stderr, "getNumChildren claims more children than
+                getChild returns\n");
             return FALSE;
          }
 
          if(oNChild == NULL) {
-            fprintf(stderr, "getChild returned NULL for an index that getNumChildren claimed was valid.\n");
+            fprintf(stderr, "getChild returned NULL for an index that
+                getNumChildren claimed was valid.\n");
             return FALSE;
          }
 
          if(Node_getParent(oNChild) != oNNode) {
-            fprintf(stderr, "The parent of the child of a node (getParent of getChild of the node) didn't return the original node.\n");
+            fprintf(stderr, "The parent of the child of a node 
+               (getParent of getChild of the node) didn't return the 
+               original node.\n");
             return FALSE;
          }
 
@@ -197,7 +206,8 @@ static size_t CheckerDT_subtreeSize(Node_T oNNode) {
          Node_T oNChild = NULL;
          Node_getChild(oNNode, ulIndex, &oNChild);
 
-         /* adds the subtree size of each child to the total subtree size */
+         /* adds the subtree size of each child to the 
+         total subtree size */
          total = total + CheckerDT_subtreeSize(oNChild);
       }
       return total; 
@@ -224,7 +234,8 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
    }
 
    if(ulCount!=CheckerDT_subtreeSize(oNRoot)){
-      fprintf(stderr, "Given ulCount does not match actual number of nodes in DT.\n");
+      fprintf(stderr, "Given ulCount does not match actual number of
+          nodes in DT.\n");
       return FALSE;
    }
 
