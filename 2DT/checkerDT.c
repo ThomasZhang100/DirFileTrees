@@ -11,7 +11,7 @@
 #include "path.h"
 
 /*
-   Performs a pre-order traversal of the tree rooted at oNNode .
+   Performs a pre-order traversal of the subtree rooted at oNNode .
    Returns FALSE if a broken invariant is found and
    returns TRUE otherwise, taking into account the existence of 
    oNHigherNode (which is oNNode or an ancestor of oNNode). 
@@ -23,15 +23,16 @@ static boolean CheckerDT_ancestorTreeCheck(Node_T oNNode, Node_T oNHigherNode) {
    size_t ulIndex;
    Path_T oHNPath;
    Path_T oNPath;
+   /*path of ancestor reference being checked against */
+   oHNPath = Node_getPath(oNHigherNode);
 
    if(oNNode!=NULL) {
-
-      oHNPath = Node_getPath(oNHigherNode);
+      /*retrieve path of current descendant node being checked*/
       oNPath = Node_getPath(oNNode);
 
       if(Path_getSharedPrefixDepth(oHNPath, oNPath) !=
          Path_getDepth(oHNPath)) {
-         fprintf(stderr, "Largest shared prefix depth of an Ancestor anc Child is not the depth of the ancestor: (%s) (%s)\n",
+         fprintf(stderr, "Largest shared prefix depth of an Ancestor and Descendant is not the depth of the ancestor: (%s) (%s)\n",
                  Path_getPathname(oNPath), Path_getPathname(oHNPath));
          return FALSE;
       }
@@ -47,8 +48,8 @@ static boolean CheckerDT_ancestorTreeCheck(Node_T oNNode, Node_T oNHigherNode) {
             return FALSE;
          }
 
-         /* if recurring down one subtree results in a failed check
-            farther down, passes the failure back up immediately */
+         /* recursively check each child's subtree, if any call fails
+            pass failure back up immediately*/
          if(!CheckerDT_ancestorTreeCheck(oNChild, oNHigherNode))
             return FALSE;
       }
@@ -73,7 +74,6 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       fprintf(stderr, "A node is a NULL pointer\n");
       return FALSE;
    }
-
 
    /* Sample check: parent's path must be the longest possible
       proper prefix of the node's path */
