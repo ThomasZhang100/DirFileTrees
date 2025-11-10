@@ -33,7 +33,7 @@ static boolean CheckerDT_ancestorTreeCheck(Node_T oNNode,
 
       if(Path_getSharedPrefixDepth(oHNPath, oNPath) !=
          Path_getDepth(oHNPath)) {
-         fprintf(stderr, "Largest shared prefix depth of an Ancestor 
+         fprintf(stderr, "Largest shared prefix depth of an Ancestor \
             and Child is not the depth of the ancestor: (%s) (%s)\n",
                  Path_getPathname(oNPath), Path_getPathname(oHNPath));
          return FALSE;
@@ -46,7 +46,7 @@ static boolean CheckerDT_ancestorTreeCheck(Node_T oNNode,
          int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
 
          if(iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children 
+            fprintf(stderr, "getNumChildren claims more children \
                than getChild returns\n");
             return FALSE;
          }
@@ -161,20 +161,20 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
          int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
 
          if(iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children than
+            fprintf(stderr, "getNumChildren claims more children than \
                 getChild returns\n");
             return FALSE;
          }
 
          if(oNChild == NULL) {
-            fprintf(stderr, "getChild returned NULL for an index that
+            fprintf(stderr, "getChild returned NULL for an index that \
                 getNumChildren claimed was valid.\n");
             return FALSE;
          }
 
          if(Node_getParent(oNChild) != oNNode) {
-            fprintf(stderr, "The parent of the child of a node 
-               (getParent of getChild of the node) didn't return the 
+            fprintf(stderr, "The parent of the child of a node \
+               (getParent of getChild of the node) didn't return the \
                original node.\n");
             return FALSE;
          }
@@ -234,7 +234,7 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
    }
 
    if(ulCount!=CheckerDT_subtreeSize(oNRoot)){
-      fprintf(stderr, "Given ulCount does not match actual number of
+      fprintf(stderr, "Given ulCount does not match actual number of \
           nodes in DT.\n");
       return FALSE;
    }
