@@ -55,7 +55,8 @@ static int Node_compareString(const Node_T oNFirst,
    return Path_compareString(oNFirst->oPPath, pcSecond);
 }
 
-int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, typeNode type, void *oPFileContents, size_t fileLength) {
+int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, 
+   typeNode type, void *oPFileContents, size_t fileLength) {
    struct node *psNew;
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
@@ -116,6 +117,15 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, typeNode type, v
    }
    else {
       /* new node must be root */
+
+      /* If new root is a file, then return CONFLICTING_PATH error*/
+      if (type == FILE_NODE) {
+         Path_free(psNew->oPPath);
+         free(psNew);
+         *poNResult = NULL;
+         return CONFLICTING_PATH;
+      }
+
       /* can only create one "level" at a time */
       if(Path_getDepth(psNew->oPPath) != 1) {
          Path_free(psNew->oPPath);
@@ -123,6 +133,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult, typeNode type, v
          *poNResult = NULL;
          return NO_SUCH_PATH;
       }
+      
    }
    psNew->oNParent = oNParent;
 
@@ -282,7 +293,8 @@ void *Node_getFileContents(Node_T oNNode){
    return oNNode->fileContents;
 }
 
-void *Node_swapFileContents(Node_T oNNode, void *newContents, size_t newLength){
+void *Node_swapFileContents(Node_T oNNode, void *newContents,
+    size_t newLength){
    void *oldContents;
    
    assert(oNNode!= NULL);

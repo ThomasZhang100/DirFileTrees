@@ -183,11 +183,21 @@ int FT_insertDir(const char *pcPath)
 
     /* find the closest ancestor of oPPath already in the tree */
     iStatus= FT_traversePath(oPPath, &oNCurr);
+    
     if(iStatus != SUCCESS)
     {
         Path_free(oPPath);
         return iStatus;
     }
+
+    /*ancestor node found: check that it is not a file (files cannot 
+    have children)*/
+    if (oNCurr != NULL && Node_getType(oNCurr) == FILE_NODE) {
+        Path_free(oPPath);
+        return NOT_A_DIRECTORY;
+    } 
+
+    
 
     /* no ancestor node found, so if root is not NULL,
         pcPath isn't underneath root. */
@@ -262,7 +272,12 @@ boolean FT_containsDir(const char *pcPath)
     assert(pcPath != NULL);
 
     iStatus = FT_findNode(pcPath, &oNFound);
-    return (boolean) (iStatus == SUCCESS);
+
+    if (iStatus != SUCCESS || Node_getType(oNFound) != DIRECTORY) {
+        return FALSE;
+    }
+
+    return TRUE;
 }
 /*--------------------------------------------------------------------*/
 
@@ -277,6 +292,10 @@ int FT_rmDir(const char *pcPath)
 
     if(iStatus != SUCCESS)
         return iStatus;
+
+    if(Node_getType(oNFound) != DIRECTORY) {
+        return NOT_A_DIRECTORY;
+    }
 
     ulCount -= Node_free(oNFound);
     if(ulCount == 0)
@@ -295,7 +314,6 @@ int FT_insertFile(const char *pcPath, void *pvContents,
     Node_T oNCurr = NULL;
     size_t ulDepth, ulIndex;
     size_t ulNewNodes = 0;
-    typeNode type = FILE_NODE;
 
     assert(pcPath != NULL);
 
@@ -308,12 +326,20 @@ int FT_insertFile(const char *pcPath, void *pvContents,
         return iStatus;
 
     /* find the closest ancestor of oPPath already in the tree */
-    iStatus= FT_traversePath(oPPath, &oNCurr);
+    iStatus = FT_traversePath(oPPath, &oNCurr);
+
     if(iStatus != SUCCESS)
     {
         Path_free(oPPath);
         return iStatus;
     }
+
+    /*ancestor node found: check that it is not a file (files cannot 
+    have children)*/
+    if (oNCurr != NULL && Node_getType(oNCurr) == FILE_NODE) {
+        Path_free(oPPath);
+        return NOT_A_DIRECTORY;
+    } 
 
     /* no ancestor node found, so if root is not NULL,
         pcPath isn't underneath root. */
@@ -325,6 +351,7 @@ int FT_insertFile(const char *pcPath, void *pvContents,
     ulDepth = Path_getDepth(oPPath);
     if(oNCurr == NULL) /* new root! */
         ulIndex = 1;
+
     else {
         ulIndex = Path_getDepth(Node_getPath(oNCurr))+1;
 
@@ -340,19 +367,24 @@ int FT_insertFile(const char *pcPath, void *pvContents,
     while(ulIndex <= ulDepth) {
         Path_T oPPrefix = NULL;
         Node_T oNNewNode = NULL;
-
         /* generate a Path_T for this level */
         iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
         if(iStatus != SUCCESS) {
             Path_free(oPPath);
             if(oNFirstNew != NULL)
                 (void) Node_free(oNFirstNew);
-            
             return iStatus;
         }
 
         /* insert the new node for this level */
-        iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, type, pvContents, ulLength);
+        if (ulIndex == ulDepth) {
+            iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, FILE_NODE, 
+                pvContents, ulLength);
+        }
+        else {
+            iStatus = Node_new(oPPrefix, oNCurr, &oNNewNode, DIRECTORY,
+                 pvContents, ulLength);
+        }
         if(iStatus != SUCCESS) {
             Path_free(oPPath);
             Path_free(oPPrefix);
@@ -360,7 +392,6 @@ int FT_insertFile(const char *pcPath, void *pvContents,
                 (void) Node_free(oNFirstNew);
             return iStatus;
         }
-
         /* set up for next level */
         Path_free(oPPrefix);
         oNCurr = oNNewNode;
@@ -375,7 +406,6 @@ int FT_insertFile(const char *pcPath, void *pvContents,
     if(oNRoot == NULL)
         oNRoot = oNFirstNew;
     ulCount += ulNewNodes;
-
     return SUCCESS;
 }
 /*--------------------------------------------------------------------*/
@@ -388,7 +418,11 @@ boolean FT_containsFile(const char *pcPath)
     assert(pcPath != NULL);
 
     iStatus = FT_findNode(pcPath, &oNFound);
-    return (boolean) (iStatus == SUCCESS);
+    if (iStatus != SUCCESS || Node_getType(oNFound) != FILE_NODE) {
+        return FALSE;
+    }
+
+    return TRUE;
 }
 /*--------------------------------------------------------------------*/
 
@@ -403,6 +437,10 @@ int FT_rmFile(const char *pcPath)
 
     if(iStatus != SUCCESS)
         return iStatus;
+
+    if(Node_getType(oNFound) != FILE_NODE) {
+        return NOT_A_FILE;
+    }
 
     ulCount -= Node_free(oNFound);
     if(ulCount == 0)
