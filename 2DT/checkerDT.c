@@ -161,13 +161,13 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
          int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
 
          if(iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children than
+            fprintf(stderr, "getNumChildren claims more children than 
                 getChild returns\n");
             return FALSE;
          }
 
          if(oNChild == NULL) {
-            fprintf(stderr, "getChild returned NULL for an index that
+            fprintf(stderr, "getChild returned NULL for an index that 
                 getNumChildren claimed was valid.\n");
             return FALSE;
          }
