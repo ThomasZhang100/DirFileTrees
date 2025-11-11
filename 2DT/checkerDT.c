@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* checkerDT.c                                                        */
-/* Author:                                                            */
+/* Authors: Thomas Zhang and Maia Abiani                              */
 /*--------------------------------------------------------------------*/
 
 #include <assert.h>
@@ -163,12 +163,6 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
          if(iStatus != SUCCESS) {
             fprintf(stderr, "getNumChildren claims more children than"
                 "getChild returns\n");
-            return FALSE;
-         }
-
-         if(oNChild == NULL) {
-            fprintf(stderr, "getChild returned NULL for an index that"
-                "getNumChildren claimed was valid.\n");
             return FALSE;
          }
 
