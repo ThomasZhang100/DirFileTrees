@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* ft.c                                                               */
-/* Author:                   */
+/* Authors: Thomas Zhang and Maia Abiani                              */
 /*--------------------------------------------------------------------*/
 
 #include <stddef.h>
@@ -485,11 +485,12 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
 
 int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize)
 {
-
     int iStatus;
     Node_T oNFound = NULL;
     typeNode type;
 
+    assert(pbIsFile !=  NULL);
+    assert(pulSize != NULL);
     assert(pcPath != NULL);
 
     iStatus = FT_findNode(pcPath, &oNFound);

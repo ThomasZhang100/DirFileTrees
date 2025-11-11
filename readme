@@ -164,6 +164,37 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
+In nodeDTGood.c, in the new Node function when DynArray_new is called
+and and succeeds (does not return NULL) so the oDChildren of the new 
+node is successfully allocated, right after when another memory 
+allocation occurs with Node_addChild (linking the new node into its
+parent's list), if this fails (iStatus!= SUCCESS), every previous memory
+allocation should be free : the new node and the new node's path gets 
+freed but it fails to also free the new nodes children dynarray at 
+this point. So this is a memory leak which should be fixed.
+We fixed this in our implementation of nodeFT.c and called
+"DynArray_free(psNew->oDChildren);" within that relevant section of 
+Node_new.
 
+In dtGood.c, the naming of the paramters for DT_preOrderTraversal is 
+inconsistent with the rest of the implementation. Each function 
+parameter is just a single letter ("n", "d", "i") whereas in the rest 
+of the implementation function parameter were consistently named
+by a convention oNNode, ulIndex etc. So DT_preOrderTraversal should also 
+follow this convention.
+
+Sometimes in nodeDTGood.c, there are a couple of very small functions 
+that simply just call another function. For example Node_compare, just
+calls Path_comparePath on its paramters. Whilst this excercises 
+modularity, it could be argued to be excessive since any function which
+calls Node_compare, could just directly call Path_compare on the nodes
+it is comparing.
+
+Similarly in DT_contains, also just calls DT_findNode when any function
+that calls DT_contains could just call DT_findNode itself and check
+if the return value of DT_findNode was SUCCESS.If we used DT_findNode 
+we could see the exact status codes to determine
+why exactly the node couldn't be found (e.g. not enough memory to 
+perform the function or the node doesn't actually exist)
 
 ------------------------------------------------------------------------
