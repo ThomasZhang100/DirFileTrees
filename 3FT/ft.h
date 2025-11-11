@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* ft.h                                                               */
-/* Author: Christopher Moretti and Vikash Modi '23                    */
+/* Authors: Thomas Zhang and Maia Abiani                              */
 /*--------------------------------------------------------------------*/
 
 #ifndef FT_INCLUDED

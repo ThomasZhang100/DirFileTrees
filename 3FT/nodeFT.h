@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* nodeFT.h                                                           */
-/* Authors:                                       */
+/* Authors: Thomas Zhang and Maia Abiani                              */
 /*--------------------------------------------------------------------*/
 
 #ifndef NODE_INCLUDED
@@ -10,15 +10,20 @@
 #include "a4def.h"
 #include "path.h"
 
-
 /* A Node_T is a node in a Directory Tree */
 typedef struct node *Node_T;
-/* typeNode is a flag for the type of Node */
-typedef enum {DIRECTORY, FILE_NODE} typeNode ;
+/* A typeNode is a flag for the type of Node */
+enum type {DIRECTORY, FILE_NODE};
+/*make enumeration feel more like a built-in type*/
+typedef enum type typeNode;
 
 /*
   Creates a new node in the File Tree, with path oPPath and
-  parent oNParent. Returns an int SUCCESS status and sets *poNResult
+  parent oNParent. 
+  If type is a file, fills the new node with oPFileContents and stores
+  the fileLength. If type is a directory sets node's file contents to
+  null and length to 0.
+  Returns an int SUCCESS status and sets *poNResult
   to be the new node if successful. Otherwise, sets *poNResult to NULL
   and returns status:
   * MEMORY_ERROR if memory could not be allocated to complete request
@@ -87,12 +92,13 @@ int Node_compare(Node_T oNFirst, Node_T oNSecond);
 */
 char *Node_toString(Node_T oNNode);
 
-/*Returns the contents of oNNode. Should only be called for file nodes.*/
+/*Returns the contents of oNNode.Should only be called for file nodes.*/
 void *Node_getFileContents(Node_T oNNode);
 
-/*Swaps the contents of file oNNode with newContents. Returns oNNodes
-previous contents.*/
-void *Node_swapFileContents(Node_T oNNode, void *newContents, size_t newLength);
+/*Swaps the contents of file oNNode with newContents and updates 
+oNNode's length to newLength. Returns oNNodes previous contents.*/
+void *Node_swapFileContents(Node_T oNNode, void *newContents, 
+                              size_t newLength);
 
 /*Returns the length of oNNode file*/
 size_t Node_getFileSize(Node_T oNNode);
