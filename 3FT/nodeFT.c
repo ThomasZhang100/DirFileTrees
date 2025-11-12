@@ -66,6 +66,7 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
 
    assert(oPPath != NULL);
    assert(type == FILE_NODE || type == DIRECTORY);
+   assert(poNResult != NULL); 
 
    /* allocate space for a new node */
    psNew = malloc(sizeof(struct node));
@@ -161,7 +162,9 @@ int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
    if(oNParent != NULL) {
       iStatus = Node_addChild(oNParent, psNew, ulIndex);
       if(iStatus != SUCCESS) {
-         DynArray_free(psNew->oDChildren);
+         if (psNew->oDChildren != NULL){
+            DynArray_free(psNew->oDChildren);
+         }
          Path_free(psNew->oPPath);
          free(psNew);
          *poNResult = NULL;
