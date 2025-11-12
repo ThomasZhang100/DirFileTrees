@@ -547,6 +547,7 @@ int FT_destroy(void)
 /*
   Performs a pre-order traversal of the tree rooted at n,
   inserting each payload to DynArray_T d beginning at index i.
+  At each depth, files are added before directories.
   Returns the next unused index in d after the insertion(s).
 */
 static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
@@ -555,27 +556,31 @@ static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
    assert(d != NULL);
 
    if(n != NULL) {
-      (void) DynArray_set(d, i, n);
-      i++;
-      for(c = 0; c < Node_getNumChildren(n); c++) {
-         int iStatus;
-         Node_T oNChild = NULL;
-         iStatus = Node_getChild(n,c, &oNChild);
-         assert(iStatus == SUCCESS);
-         if (Node_getType(oNChild) == FILE_NODE) {
-             DynArray_set(d, i, n);
-             i++;
+        /*insert current node*/
+        (void) DynArray_set(d, i, n);
+        i++;
+
+        /*first pass to add files at this depth*/
+        for(c = 0; c < Node_getNumChildren(n); c++) {
+        int iStatus;
+        Node_T oNChild = NULL;
+        iStatus = Node_getChild(n,c, &oNChild);
+        assert(iStatus == SUCCESS);
+        if (Node_getType(oNChild) == FILE_NODE) {
+            (void) DynArray_set(d, i, oNChild);
+            i++;
          }
-      }
-      for(c = 0; c < Node_getNumChildren(n); c++) {
-         int iStatus;
-         Node_T oNChild = NULL;
-         iStatus = Node_getChild(n,c, &oNChild);
-         assert(iStatus == SUCCESS);
-         if (Node_getType(oNChild) == DIRECTORY) {
-            i = FT_preOrderTraversal(oNChild, d, i);
-         }
-      }
+        }
+        /*second pass to recurse on directories at this depth*/
+        for(c = 0; c < Node_getNumChildren(n); c++) {
+        int iStatus;
+        Node_T oNChild = NULL;
+        iStatus = Node_getChild(n,c, &oNChild);
+        assert(iStatus == SUCCESS);
+        if (Node_getType(oNChild) == DIRECTORY) {
+            i = FT_preOrderTraversal(oNChild, d, i); 
+            }
+        }
    }
    return i;
 }
