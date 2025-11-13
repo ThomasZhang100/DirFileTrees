@@ -545,44 +545,45 @@ int FT_destroy(void)
 */
 
 /*
-  Performs a pre-order traversal of the tree rooted at n,
-  inserting each payload to DynArray_T d beginning at index i.
+  Performs a pre-order traversal of the tree rooted at oNNode,
+  inserting each payload to DynArray_T nodes beginning at index ulIndex.
   At each depth, files are added before directories.
-  Returns the next unused index in d after the insertion(s).
+  Returns the next unused index in nodes after the insertion(s).
 */
-static size_t FT_preOrderTraversal(Node_T n, DynArray_T d, size_t i) {
+static size_t FT_preOrderTraversal(Node_T oNNode, DynArray_T nodes, 
+    size_t ulIndex) {
    size_t c;
 
-   assert(d != NULL);
+   assert(nodes != NULL);
 
-   if(n != NULL) {
+   if(oNNode != NULL) {
         /*insert current node*/
-        (void) DynArray_set(d, i, n);
-        i++;
+        (void) DynArray_set(nodes, ulIndex, oNNode);
+        ulIndex++;
 
         /*first pass to add files at this depth*/
-        for(c = 0; c < Node_getNumChildren(n); c++) {
+        for(c = 0; c < Node_getNumChildren(oNNode); c++) {
         int iStatus;
         Node_T oNChild = NULL;
-        iStatus = Node_getChild(n,c, &oNChild);
+        iStatus = Node_getChild(oNNode, c, &oNChild);
         assert(iStatus == SUCCESS);
         if (Node_getType(oNChild) == FILE_NODE) {
-            (void) DynArray_set(d, i, oNChild);
-            i++;
+            (void) DynArray_set(nodes, ulIndex, oNChild);
+            ulIndex++;
          }
         }
         /*second pass to recurse on directories at this depth*/
-        for(c = 0; c < Node_getNumChildren(n); c++) {
+        for(c = 0; c < Node_getNumChildren(oNNode); c++) {
         int iStatus;
         Node_T oNChild = NULL;
-        iStatus = Node_getChild(n,c, &oNChild);
+        iStatus = Node_getChild(oNNode,c, &oNChild);
         assert(iStatus == SUCCESS);
         if (Node_getType(oNChild) == DIRECTORY) {
-            i = FT_preOrderTraversal(oNChild, d, i); 
+            ulIndex = FT_preOrderTraversal(oNChild, nodes, ulIndex); 
             }
         }
    }
-   return i;
+   return ulIndex;
 }
 
 /*
