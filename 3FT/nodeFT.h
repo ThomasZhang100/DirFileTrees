@@ -27,7 +27,8 @@ typedef enum type typeNode;
   to be the new node if successful. Otherwise, sets *poNResult to NULL
   and returns status:
   * MEMORY_ERROR if memory could not be allocated to complete request
-  * CONFLICTING_PATH if oNParent's path is not an ancestor of oPPath
+  * CONFLICTING_PATH if oNParent's path is not an ancestor of oPPath,
+   or if new node would be the root and is a file
   * NO_SUCH_PATH if oPPath is of depth 0
                  or oNParent's path is not oPPath's direct parent
                  or oNParent is NULL but oPPath is not of depth 1
