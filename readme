@@ -3,12 +3,12 @@ Assignment 4 readme File
 ------------------------------------------------------------------------
 Student 1: What is your name?
 
-
+Maia Abiani
 
 ------------------------------------------------------------------------
 Student 2: What is your name?
 
-
+Thomas Zhang 
 
 ------------------------------------------------------------------------
 Student 1: What authorized sources of information did you use to
@@ -17,7 +17,12 @@ information given in the "Policies" web page (also available on armlab
 in the file ~cos217/AuthorizedSourcesList ) to this section of the
 readme file, and edit it as appropriate.
 
-
+COS 217 lecture materials.
+COS 217 precept materials.
+COS 217 website.
+COS 217 staff in office hours.
+COS 217 staff and/or current students on Ed.
+Lab TAs during Lab TA hours.
 
 ------------------------------------------------------------------------
 Student 2: What authorized sources of information did you use to
@@ -26,7 +31,12 @@ information given in the "Policies" web page (also available on armlab
 in the file ~cos217/AuthorizedSourcesList ) to this section of the
 readme file, and edit it as appropriate.
 
-
+COS 217 lecture materials.
+COS 217 precept materials.
+COS 217 website.
+COS 217 staff in office hours.
+COS 217 staff and/or current students on Ed.
+Lab TAs during Lab TA hours.
 
 ------------------------------------------------------------------------
 Student 1: What unauthorized sources of information did you use to
@@ -40,7 +50,7 @@ nature of the interaction, may additionally require the interaction
 being reported to the Committee on Discipline. Write "None" if you used
 no unauthorized sources of information.
 
-
+None
 
 ------------------------------------------------------------------------
 Student 2: What unauthorized sources of information did you use to
@@ -54,7 +64,7 @@ nature of the interaction, may additionally require the interaction
 being reported to the Committee on Discipline. Write "None" if you used
 no unauthorized sources of information.
 
-
+None
 
 ------------------------------------------------------------------------
 Student 1: In fulfillment of the requirement from section 2.4.3 of the
@@ -64,7 +74,7 @@ guide, enter your name in the space below the following affirmation:
 This paper represents my own work in accordance with University
 regulations.
 
-
+Maia Abiani
 
 ------------------------------------------------------------------------
 Student 2: In fulfillment of the requirement from section 2.4.3 of the
@@ -74,7 +84,7 @@ guide, enter your name in the space below the following affirmation:
 This paper represents my own work in accordance with University
 regulations.
 
-
+Thomas Zhang
 
 ------------------------------------------------------------------------
 In fulfillment of the requirement from section 2.4.6 of the Academic
@@ -82,7 +92,7 @@ Regulations in Princeton's Rights, Rules, Responsibilities guide,
 and the COS 217 Generative AI policy, disclose and describe how you
 used AI in completing this assignment:
 
-
+N/A
 
 ------------------------------------------------------------------------
 Student 1: What is your assessment of the assignment? Was it helpful?
@@ -94,7 +104,10 @@ Was it fun?
 Student 2: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-
+The assignment was slightly long-winded, as expected, but it was 
+definitely helpful in refining our gdb skills and our understanding of
+common bugs like memory leaks and the strategies to mitigate them: e.g.
+invariant checking. It was fun. 
 
 ------------------------------------------------------------------------
 (optional) What information can you provide about your submission that
@@ -109,6 +122,26 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+dtGood.c:94:42: Variable ulChildID used before definition
+  An rvalue is used that may not be initialized to a value on some 
+  execution path. (Use -usedef to inhibit warning)
+nodeDTGood.c:148:48: Variable ulIndex used before definition
+nodeDTGood.c:180:35: Variable ulIndex used before definition
+
+- These warnings are all in the good code that the assignment 
+provided — these variables are all defined by the time they are used, 
+just in a separate function. 
+
+path.h:94:13: Function exported but not used outside path: 
+Path_getComponent A declaration is exported, but not used outside this 
+module. Declaration can use static qualifier. 
+(Use -exportlocal to inhibit warning)
+path.c:316:1: Definition of Path_getComponent
+
+- Path_getComponent was provided by the assignment files and 
+we found no use for the Path_getComponent function in our 
+invariant checker. However, it does seem like a useful function
+to include in the path module. 
 
 
 ------------------------------------------------------------------------
@@ -117,7 +150,7 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
-
+None
 
 ------------------------------------------------------------------------
 What warnings does splint generate on your Part 3 code, and what are
@@ -125,6 +158,45 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+nodeFT.c:162:48: Variable ulIndex used before definition
+
+- This warning was also seen in nodeDTGood for 2FT. If we reach this 
+point in the code, then Node_hasChild(oNParent, oPPath, &ulIndex) 
+has been called, which means that ulIndex has definitely been defined. 
+
+nodeFT.c:164:24: Field psNew->oDChildren used before definition
+
+- If we reach this point in the code, then psNew->oDChildren is either 
+NULL or a pointer to a dynarray (from the if/elseif statements on lines
+141-157). 
+
+nodeFT.c:196:35: Variable ulIndex used before definition
+
+- This warning was also seen in nodeDTGood for 2FT. If we reach this 
+point in the code, then DynArray_bsearch( .., .., &ulIndex, ..)  
+has been called, which means that ulIndex has definitely been defined. 
+
+path.h:94:13: Function exported but not used outside path: 
+Path_getComponent
+  A declaration is exported, but not used outside this module. 
+  Declaration can use static qualifier. 
+  (Use -exportlocal to inhibit warning)
+   path.c:316:1: Definition of Path_getComponent
+
+- Path_getComponent was provided by the assignment files and 
+we found no use for the Path_getComponent function in our 
+ft and nodeft implementations. However, it does seem like a useful 
+function to include in the path module e.g. for invariant checks. 
+
+nodeFT.h:84:5: Function exported but not used outside nodeFT: 
+Node_compare
+   nodeFT.c:278:1: Definition of Node_compare
+
+- Although Node_compare can be easily replaced by Path_compare (which we 
+mention in our part 2 critique), we believe that it makes sense to 
+include such a function for the purposes of modularity and indirection
+for more readable code. If we were to write many more invariant checks, 
+Node_compare would likely be a useful function to have. 
 
 
 ------------------------------------------------------------------------
@@ -133,11 +205,51 @@ your disagreements with them? Copy the critTer warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
-ft.c: line 639: low priority: 
-   A file should contain no more than 15 functions;
-   this file contains 17 functions
+ft.c: line 644: low priority: 
+A file should contain no more than 15 functions;
+this file contains 17 functions
 
+All 17 functions are necessary for our ft implementation, and combining
+any two of them would make the code less modular/readable. Moreover, 
+all 17 functions are closely related to the FT object and its 
+implementation needs (strong cohesion). All of our functions were 
+highly specific to the FT — e.g. strlenAccumulate (weak coupling). 
 
+ft.c: line 310: medium priority:
+Do you want to validate 'pvContents' through an assert?
+
+We don't want to assert that pvContents is not NULL because the user
+might want to insert a file with NULL contents. 
+
+ft.c: line 471: medium priority:
+Do you want to validate 'pvNewContents' through an assert?
+
+We don't want to assert that pvNewContents is not NULL because 
+the user might want to replace the existing contents with  
+NULL contents. 
+
+ft.c: line 643: low priority: 
+A source code file should contain fewer than 500 lines;
+this file contains 644 lines
+
+We didn't want to shorten our implementation because doing so would 
+require combining functions, which would harm our modularity and
+readability. Moreover, we found that our current FT implementation has
+good cohesion and moving functions to other modules would reduce 
+cohesion. 
+
+nodeFT.c: line 59: medium priority:
+Do you want to validate 'oPFileContents' through an assert?
+
+We don't want to assert that oPFileContents is not NULL because the 
+user might want to insert a file with NULL contents. 
+
+nodeFT.c: line 301: medium priority:
+Do you want to validate 'newContents' through an assert?
+
+We don't want to assert that newContents is not NULL because 
+the user might want to replace the existing contents with  
+NULL contents. 
 
 ------------------------------------------------------------------------
 For each of the five faulty BDT implementations required by Step
@@ -164,17 +276,18 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
-In nodeDTGood.c, in the new Node function when DynArray_new is called
-and and succeeds (does not return NULL) so the oDChildren of the new 
-node is successfully allocated, right after when another memory 
-allocation occurs with Node_addChild (linking the new node into its
-parent's list), if this fails (iStatus!= SUCCESS), every previous memory
-allocation should be free : the new node and the new node's path gets 
-freed but it fails to also free the new nodes children dynarray at 
-this point. So this is a memory leak which should be fixed.
-We fixed this in our implementation of nodeFT.c and called
+In nodeDTGood.c, in the Node_new function when DynArray_new is called
+and and succeeds (does not return NULL), then we have allocated
+memory for the oDChildren of the new Node (on line 138). 
+But then right after when another memory allocation occurs with 
+Node_addChild (linking the new node into its parent's list), 
+if this fails (iStatus!= SUCCESS on line 149), we need to free all 
+memory associated with the new node: the new node and the new node's 
+path gets freed but it fails to also free the new node's 
+children dynarray at this point. So this is a memory leak which should 
+be fixed. We fixed this in our implementation of nodeFT.c and called
 "DynArray_free(psNew->oDChildren);" within that relevant section of 
-Node_new.
+Node_new. 
 
 In dtGood.c, the naming of the paramters for DT_preOrderTraversal is 
 inconsistent with the rest of the implementation. Each function 
@@ -192,7 +305,7 @@ it is comparing.
 
 Similarly in DT_contains, also just calls DT_findNode when any function
 that calls DT_contains could just call DT_findNode itself and check
-if the return value of DT_findNode was SUCCESS.If we used DT_findNode 
+if the return value of DT_findNode was SUCCESS. If we used DT_findNode 
 we could see the exact status codes to determine
 why exactly the node couldn't be found (e.g. not enough memory to 
 perform the function or the node doesn't actually exist)
