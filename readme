@@ -98,7 +98,8 @@ N/A
 Student 1: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-Definitely helpful to get familiar with using gdb for debugging.
+Definitely helpful to get familiar with using gdb for debugging, and
+fun.
 
 ------------------------------------------------------------------------
 Student 2: What is your assessment of the assignment? Was it helpful?
@@ -289,7 +290,7 @@ be fixed. We fixed this in our implementation of nodeFT.c and called
 "DynArray_free(psNew->oDChildren);" within that relevant section of 
 Node_new. 
 
-In dtGood.c, the naming of the paramters for DT_preOrderTraversal is 
+In dtGood.c, the naming of the parameters for DT_preOrderTraversal is 
 inconsistent with the rest of the implementation. Each function 
 parameter is just a single letter ("n", "d", "i") whereas in the rest 
 of the implementation function parameter were consistently named
@@ -298,7 +299,7 @@ follow this convention.
 
 Sometimes in nodeDTGood.c, there are a couple of very small functions 
 that simply just call another function. For example Node_compare, just
-calls Path_comparePath on its paramters. Whilst this excercises 
+calls Path_comparePath on its parameters. Whilst this excercises 
 modularity, it could be argued to be excessive since any function which
 calls Node_compare, could just directly call Path_compare on the nodes
 it is comparing.
